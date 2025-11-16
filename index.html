@@ -1,27 +1,84 @@
-<script>
-async function askAI() {
-    let q = document.getElementById("question").value;
-    let ans = document.getElementById("answer");
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mays AI</title>
 
-    if (!q) {
+  <style>
+    body {
+      background: #001117;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 60px;
+    }
+    .box {
+      width: 90%;
+      max-width: 400px;
+      padding: 14px 18px;
+      font-size: 18px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 26px;
+      font-size: 18px;
+      border-radius: 20px;
+      border: none;
+      background: dodgerblue;
+      color: white;
+    }
+    #answer {
+      margin-top: 20px;
+      font-size: 20px;
+      width: 90%;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Mays AI</h1>
+
+  <input id="question" class="box" type="text" placeholder="Ask something...">
+  <br>
+  <button onclick="askAI()">Ask</button>
+
+  <div id="answer"></div>
+
+  <script>
+    async function askAI() {
+      let q = document.getElementById("question").value;
+      let ans = document.getElementById("answer");
+
+      if (!q) {
         ans.innerText = "Please enter a question!";
         return;
-    }
+      }
 
-    ans.innerText = "Thinking...";
+      ans.innerText = "Thinking...";
 
-    try {
+      try {
         let res = await fetch("https://mays-ai-backend.onrender.com/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question: q })
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: q })
         });
 
         let data = await res.json();
         ans.innerText = data.answer || "No answer from backend";
-    }
-    catch (err) {
+      }
+      catch (err) {
         ans.innerText = "Error: " + err.message;
+      }
     }
-}
-</script>
+  </script>
+
+</body>
+</html>
