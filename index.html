@@ -1,73 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Mays AI</title>
 
-  <style>
-    body {
-      background:#0b1220;
-      color:white;
-      font-family:Arial, sans-serif;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      margin:0;
-      text-align:center;
-    }
-    button {
-      padding:14px 26px;
-      font-size:18px;
-      border:none;
-      border-radius:25px;
-      background:#1a73e8;
-      color:white;
-      cursor:pointer;
-    }
-    button:hover {
-      opacity:0.9;
-    }
-  </style>
-</head>
-
-<body>
-  <div>
-    <h1>Mays AI</h1>
-    <button onclick="loginWithGoogle()">Login with Google</button>
-    <p id="status">Not logged in</p>
-  </div>
-
-  <!-- FIREBASE AUTH (MODULE MODE) -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // 🔑 FIREBASE CONFIG — YOUR PROJECT
     const firebaseConfig = {
-      apiKey: "AIzaSyAkyTDu8f5dwJMK7EiRv_eTCyW0PVhrzhc",
-      authDomain: "mays-ai-c1ccf.firebaseapp.com",
-      projectId: "mays-ai-c1ccf",
-      storageBucket: "mays-ai-c1ccf.firebasestorage.app",
-      messagingSenderId: "206339500972",
-      appId: "1:206339500972:web:dae164eef2c28067176809"
+      apiKey: "AIzaSyA_REPLACE_THIS",
+      authDomain: "mays-ai-39099.firebaseapp.com",
+      projectId: "mays-ai-39099",
+      appId: "1:846088230728:web:1dd90593b0602321bd057d"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    window.loginWithGoogle = async () => {
+    window.login = async () => {
       try {
-        const result = await signInWithPopup(auth, provider);
-        document.getElementById("status").innerText =
-          "Logged in as: " + result.user.email;
+        await signInWithPopup(auth, provider);
       } catch (err) {
-        alert("LOGIN ERROR: " + err.message);
-        console.error(err);
+        alert(err.message);
       }
     };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("status").innerText =
+          "Logged in: " + user.email;
+      }
+    });
   </script>
+
+  <style>
+    body {
+      background: #0b1220;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      padding-top: 100px;
+    }
+    button {
+      padding: 14px 28px;
+      font-size: 18px;
+      background: #4285f4;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Mays AI</h1>
+  <button onclick="login()">Login with Google</button>
+  <p id="status">Not logged in</p>
 </body>
 </html>
