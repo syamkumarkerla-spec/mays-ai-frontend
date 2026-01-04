@@ -13,15 +13,17 @@
       text-align: center;
       padding: 60px;
     }
-    .box {
+
+    input {
       width: 90%;
       max-width: 400px;
-      padding: 14px 18px;
+      padding: 14px;
       font-size: 18px;
       border-radius: 20px;
       border: none;
       outline: none;
     }
+
     button {
       margin-top: 20px;
       padding: 12px 26px;
@@ -30,11 +32,12 @@
       border: none;
       background: dodgerblue;
       color: white;
+      cursor: pointer;
     }
+
     #answer {
-      margin-top: 20px;
+      margin-top: 30px;
       font-size: 20px;
-      width: 90%;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
@@ -46,36 +49,46 @@
 
   <h1>Mays AI</h1>
 
-  <input id="question" class="box" type="text" placeholder="Ask something...">
-  <br>
-  <button onclick="askAI()">Ask</button>
+  <!-- AUTH -->
+  <button id="loginBtn">Login with Google</button>
+  <button id="logoutBtn" style="display:none;">Logout</button>
+  <p id="userInfo"></p>
 
-  <div id="answer"></div>
+  <!-- CHAT -->
+  <div id="chatBox" style="display:none;">
+    <input id="question" type="text" placeholder="Ask something..." />
+    <br>
+    <button onclick="askAI()">Ask</button>
+    <div id="answer"></div>
+  </div>
 
+  <!-- Firebase Auth Logic -->
+  <script type="module" src="script.js"></script>
+
+  <!-- Chat API -->
   <script>
     async function askAI() {
-      let q = document.getElementById("question").value;
-      let ans = document.getElementById("answer");
+      const q = document.getElementById("question").value;
+      const ans = document.getElementById("answer");
 
       if (!q) {
-        ans.innerText = "Please enter a question!";
+        ans.innerText = "Please enter a question";
         return;
       }
 
       ans.innerText = "Thinking...";
 
       try {
-        let res = await fetch("https://mays-ai-backend.onrender.com/api/chat", {
+        const res = await fetch("https://mays-ai-backend.onrender.com/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ question: q })
         });
 
-        let data = await res.json();
-        ans.innerText = data.answer || "No answer from backend";
-      }
-      catch (err) {
-        ans.innerText = "Error: " + err.message;
+        const data = await res.json();
+        ans.innerText = data.answer || "No answer";
+      } catch (err) {
+        ans.innerText = "Error connecting to server";
       }
     }
   </script>
