@@ -1,30 +1,75 @@
-const API_URL = "https://mays-ai-backend.onrender.com/api/chat";
+// ===============================
+// Firebase SDK imports
+// ===============================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-async function askAI() {
-    const question = document.getElementById("question").value;
-    if (!question) {
-        alert("Please enter a question!");
-        return;
-    }
+// ===============================
+// 🔐 Firebase Configuration
+// (ONLY Firebase keys — NOT OpenAI)
+// ===============================
+const firebaseConfig = {
+  apiKey: "AIzaSyAkYDU8FsDwJMXEirv_tcYwPWhZhc",
+  authDomain: "mays-ai-clccf.firebaseapp.com",
+  projectId: "mays-ai-clccf",
+  storageBucket: "mays-ai-clccf.appspot.com",
+  messagingSenderId: "206339500972",
+  appId: "1:206339500972:web:dae164eef2c28067176889"
+};
 
-    const responseBox = document.getElementById("response");
-    responseBox.innerText = "Thinking...";
+// ===============================
+// Initialize Firebase
+// ===============================
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-    try {
-        const res = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question })
-        });
+// ===============================
+// DOM Elements
+// ===============================
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const chatBox = document.getElementById("chatBox");
+const userInfo = document.getElementById("userInfo");
 
-        const data = await res.json();
+// ===============================
+// Login
+// ===============================
+loginBtn.addEventListener("click", async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (err) {
+    alert("Login failed");
+    console.error(err);
+  }
+});
 
-        if (data.error) {
-            responseBox.innerText = "Error: " + data.error;
-        } else {
-            responseBox.innerText = data.answer;
-        }
-    } catch (err) {
-        responseBox.innerText = "Network Error: " + err.message;
-    }
-}
+// ===============================
+// Logout
+// ===============================
+logoutBtn.addEventListener("click", async () => {
+  await signOut(auth);
+});
+
+// ===============================
+// Auth State Listener
+// ===============================
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    userInfo.innerText = `Logged in as ${user.displayName}`;
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+    chatBox.style.display = "block";
+  } else {
+    userInfo.innerText = "Not logged in";
+    loginBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+    chatBox.style.display = "none";
+  }
+});
