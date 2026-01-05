@@ -4,8 +4,6 @@ import {
   GoogleAuthProvider,
   signInWithRedirect,
   getRedirectResult,
-  setPersistence,
-  browserLocalPersistence,
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -16,34 +14,30 @@ const firebaseConfig = {
   projectId: "mays-ai-39099",
   storageBucket: "mays-ai-39099.appspot.com",
   messagingSenderId: "846088230728",
-  appId: "1:846088230728:web:1dd90593b0602321bd057d"
+  appId: "1:846088230728:web:1dd90593b0602321bd057d",
+  measurementId: "G-CSQF4PY5L5"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// 🔥 CRITICAL FOR MOBILE + GITHUB PAGES
-provider.setCustomParameters({
-  redirect_uri: window.location.href
-});
-
-await setPersistence(auth, browserLocalPersistence);
-
 const status = document.getElementById("status");
-const loginBtn = document.getElementById("login");
-const logoutBtn = document.getElementById("logout");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
+// 🔑 LOGIN (REDIRECT – NOT POPUP)
 loginBtn.onclick = () => {
   signInWithRedirect(auth, provider);
 };
 
-// MUST be called on page load
-getRedirectResult(auth).catch(() => {});
+// 🔁 HANDLE REDIRECT RESULT
+getRedirectResult(auth).catch(console.error);
 
-onAuthStateChanged(auth, (user) => {
+// 🔄 AUTH STATE
+onAuthStateChanged(auth, user => {
   if (user) {
-    status.innerText = `Logged in as ${user.displayName}`;
+    status.innerText = `Hi ${user.displayName}`;
     loginBtn.style.display = "none";
     logoutBtn.style.display = "block";
   } else {
@@ -53,4 +47,5 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+// 🚪 LOGOUT
 logoutBtn.onclick = () => signOut(auth);
