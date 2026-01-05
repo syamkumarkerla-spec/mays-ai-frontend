@@ -1,26 +1,26 @@
 // ===============================
-// Firebase SDK imports
+// Firebase SDK imports (CDN)
 // ===============================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 // ===============================
-// 🔐 Firebase Configuration
-// (ONLY Firebase keys — NOT OpenAI)
+// 🔴 Firebase CONFIG (YOUR PROJECT)
 // ===============================
 const firebaseConfig = {
-  apiKey: "AIzaSyAkYDU8FsDwJMXEirv_tcYwPWhZhc",
-  authDomain: "mays-ai-clccf.firebaseapp.com",
-  projectId: "mays-ai-clccf",
-  storageBucket: "mays-ai-clccf.appspot.com",
-  messagingSenderId: "206339500972",
-  appId: "1:206339500972:web:dae164eef2c28067176889"
+  apiKey: "AIzaSyDa_WIFoo8mB7XhKdnr5NaUES2k0j9ROwk",
+  authDomain: "mays-ai-39099.firebaseapp.com",
+  projectId: "mays-ai-39099",
+  storageBucket: "mays-ai-39099.firebasestorage.app",
+  messagingSenderId: "846088230728",
+  appId: "1:846088230728:web:1dd90593b0602321bd057d"
 };
 
 // ===============================
@@ -35,34 +35,35 @@ const provider = new GoogleAuthProvider();
 // ===============================
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
-const chatBox = document.getElementById("chatBox");
 const userInfo = document.getElementById("userInfo");
+const chatBox = document.getElementById("chatBox");
 
 // ===============================
-// Login
+// LOGIN (MOBILE SAFE)
 // ===============================
-loginBtn.addEventListener("click", async () => {
-  try {
-    await signInWithPopup(auth, provider);
-  } catch (err) {
-    alert("Login failed");
-    console.error(err);
-  }
+loginBtn.addEventListener("click", () => {
+  signInWithRedirect(auth, provider);
 });
 
 // ===============================
-// Logout
+// HANDLE REDIRECT RESULT
 // ===============================
-logoutBtn.addEventListener("click", async () => {
-  await signOut(auth);
-});
+getRedirectResult(auth)
+  .then((result) => {
+    if (result && result.user) {
+      console.log("Login success:", result.user.displayName);
+    }
+  })
+  .catch((error) => {
+    console.error("Redirect login error:", error);
+  });
 
 // ===============================
-// Auth State Listener
+// AUTH STATE LISTENER
 // ===============================
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    userInfo.innerText = `Logged in as ${user.displayName}`;
+    userInfo.innerText = `Hi ${user.displayName}`;
     loginBtn.style.display = "none";
     logoutBtn.style.display = "block";
     chatBox.style.display = "block";
@@ -72,4 +73,11 @@ onAuthStateChanged(auth, (user) => {
     logoutBtn.style.display = "none";
     chatBox.style.display = "none";
   }
+});
+
+// ===============================
+// LOGOUT
+// ===============================
+logoutBtn.addEventListener("click", async () => {
+  await signOut(auth);
 });
