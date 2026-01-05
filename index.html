@@ -2,65 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mays AI</title>
-
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #050b1f, #0b1c3a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: Arial, sans-serif;
-      color: white;
-    }
-
-    .container {
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 32px;
-      margin-bottom: 20px;
-    }
-
-    button {
-      padding: 14px 28px;
-      font-size: 16px;
-      border-radius: 30px;
-      border: none;
-      cursor: pointer;
-      background: #4285f4;
-      color: white;
-    }
-
-    #logoutBtn {
-      background: #ff4d4d;
-      display: none;
-      margin-top: 10px;
-    }
-
-    #userText {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-  </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Mays AI</h1>
+  <h2 id="status">Not logged in</h2>
 
-    <button id="loginBtn">Login with Google</button>
-    <button id="logoutBtn">Logout</button>
+  <button id="loginBtn">Login with Google</button>
+  <button id="logoutBtn" style="display:none;">Logout</button>
 
-    <p id="userText">Not logged in</p>
-  </div>
-
-  <!-- IMPORTANT: module -->
   <script type="module" src="script.js"></script>
-
 </body>
 </html>
