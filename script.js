@@ -73,6 +73,3 @@ onAuthStateChanged(auth, (user) => {
     chatBox.style.display = "none";
   }
 });
-app.get("/health", (req, res) => {
-  res.status(200).send("OK");
-});
