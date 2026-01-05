@@ -1,16 +1,17 @@
-// Firebase imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+// ===== FIREBASE IMPORTS =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithRedirect,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  getRedirectResult,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// 🔴 YOUR FIREBASE CONFIG (already correct)
+// ===== YOUR FIREBASE CONFIG (USE YOUR REAL ONE) =====
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "YOUR_API_KEY_HERE",
   authDomain: "mays-ai-39099.firebaseapp.com",
   projectId: "mays-ai-39099",
   storageBucket: "mays-ai-39099.appspot.com",
@@ -18,35 +19,40 @@ const firebaseConfig = {
   appId: "1:846088230728:web:1dd90593b0602321bd057d"
 };
 
-// Init
+// ===== INIT =====
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// DOM
+// ===== DOM =====
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
-const userText = document.getElementById("userText");
+const statusText = document.getElementById("status");
 
-// 🔥 LOGIN (REDIRECT – MOBILE SAFE)
-loginBtn.addEventListener("click", () => {
+// ===== LOGIN =====
+loginBtn.onclick = () => {
   signInWithRedirect(auth, provider);
+};
+
+// ===== HANDLE REDIRECT RESULT =====
+getRedirectResult(auth).catch(err => {
+  console.error("Redirect error:", err);
 });
 
-// LOGOUT
-logoutBtn.addEventListener("click", async () => {
-  await signOut(auth);
-});
-
-// 🔥 AUTH STATE (THIS IS THE KEY FIX)
+// ===== AUTH STATE =====
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    userText.innerText = `Hi ${user.displayName}`;
+    statusText.innerText = `Logged in as ${user.displayName}`;
     loginBtn.style.display = "none";
-    logoutBtn.style.display = "inline-block";
+    logoutBtn.style.display = "block";
   } else {
-    userText.innerText = "Not logged in";
-    loginBtn.style.display = "inline-block";
+    statusText.innerText = "Not logged in";
+    loginBtn.style.display = "block";
     logoutBtn.style.display = "none";
   }
 });
+
+// ===== LOGOUT =====
+logoutBtn.onclick = () => {
+  signOut(auth);
+};
