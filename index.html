@@ -1,13 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mays AI</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0b0f;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 12px;
+      background: #4f46e5;
+      color: white;
+      cursor: pointer;
+    }
+
+    .answer {
+      margin-top: 20px;
+      background: #15151c;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h1 span {
+      background: linear-gradient(90deg, #4f46e5, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 3s infinite linear;
+    }
+
+    @keyframes glow {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+  </style>
 </head>
+
 <body>
-<h2 id="status">Not logged in</h2>
-<button id="loginBtn">Login with Google</button>
-<button id="logoutBtn" style="display:none">Logout</button>
-<script type="module" src="script.js"></script>
+
+<div class="box">
+
+  <!-- SCREEN 1 -->
+  <div id="screen-name">
+    <h1><span>Mays AI</span></h1>
+    <p>What should I call you?</p>
+    <input id="nameInput" placeholder="Enter your name" />
+    <button onclick="saveName()">Start</button>
+  </div>
+
+  <!-- SCREEN 2 -->
+  <div id="screen-chat" class="hidden">
+    <h2 id="greet"></h2>
+    <input id="questionInput" placeholder="Ask anything…" />
+    <button onclick="ask()">Ask</button>
+    <div id="answerBox" class="answer hidden"></div>
+  </div>
+
+</div>
+
+<script>
+  const nameScreen = document.getElementById("screen-name");
+  const chatScreen = document.getElementById("screen-chat");
+  const greet = document.getElementById("greet");
+  const answerBox = document.getElementById("answerBox");
+
+  const savedName = localStorage.getItem("mays_name");
+
+  if (savedName) {
+    showChat(savedName);
+  }
+
+  function saveName() {
+    const name = document.getElementById("nameInput").value.trim();
+    if (!name) return;
+    localStorage.setItem("mays_name", name);
+    showChat(name);
+  }
+
+  function showChat(name) {
+    nameScreen.classList.add("hidden");
+    chatScreen.classList.remove("hidden");
+    greet.innerText = `Hi ${name}`;
+  }
+
+  function ask() {
+    const q = document.getElementById("questionInput").value.trim();
+    if (!q) return;
+
+    answerBox.classList.remove("hidden");
+    answerBox.innerText = "Thinking…";
+
+    setTimeout(() => {
+      answerBox.innerText =
+        "This is a demo answer.\n\nNext step: connect real AI + live search.";
+    }, 800);
+  }
+</script>
+
 </body>
 </html>
