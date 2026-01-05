@@ -1,3 +1,4 @@
+// Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
@@ -5,47 +6,42 @@ import {
   signInWithRedirect,
   getRedirectResult,
   onAuthStateChanged,
-  signOut
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// Firebase config (USE YOURS)
 const firebaseConfig = {
   apiKey: "AIzaSyDa_WIFoo8mB7XhKdnr5NaUES2k0j9ROwk",
   authDomain: "mays-ai-39099.firebaseapp.com",
   projectId: "mays-ai-39099",
-  storageBucket: "mays-ai-39099.appspot.com",
+  storageBucket: "mays-ai-39099.firebasestorage.app",
   messagingSenderId: "846088230728",
   appId: "1:846088230728:web:1dd90593b0602321bd057d",
   measurementId: "G-CSQF4PY5L5"
 };
 
+// Init
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-const status = document.getElementById("status");
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
+// Persistence (MOST IMPORTANT)
+await setPersistence(auth, browserLocalPersistence);
 
-// 🔑 LOGIN (REDIRECT – NOT POPUP)
-loginBtn.onclick = () => {
+// Login button
+document.getElementById("loginBtn").onclick = () => {
   signInWithRedirect(auth, provider);
 };
 
-// 🔁 HANDLE REDIRECT RESULT
-getRedirectResult(auth).catch(console.error);
+// Handle redirect result
+getRedirectResult(auth).catch(err => console.error(err));
 
-// 🔄 AUTH STATE
+// Auth state
 onAuthStateChanged(auth, user => {
   if (user) {
-    status.innerText = `Hi ${user.displayName}`;
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "block";
+    document.body.innerHTML = `<h2>Logged in as ${user.displayName}</h2>`;
   } else {
-    status.innerText = "Not logged in";
-    loginBtn.style.display = "block";
-    logoutBtn.style.display = "none";
+    document.getElementById("status").innerText = "Not logged in";
   }
 });
-
-// 🚪 LOGOUT
-logoutBtn.onclick = () => signOut(auth);
