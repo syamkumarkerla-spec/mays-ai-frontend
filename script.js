@@ -1,18 +1,20 @@
+// Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithRedirect,
-  getRedirectResult,
-  onAuthStateChanged,
-  signOut
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// 🔐 Firebase config (ONLY auth-related)
+// 🔴 YOUR FIREBASE CONFIG (already correct)
 const firebaseConfig = {
-  apiKey: "AIzaSyDa_WIFoo8mB7XhKdnr5NaUES2k0j9ROwk",
+  apiKey: "YOUR_API_KEY",
   authDomain: "mays-ai-39099.firebaseapp.com",
   projectId: "mays-ai-39099",
+  storageBucket: "mays-ai-39099.appspot.com",
+  messagingSenderId: "846088230728",
   appId: "1:846088230728:web:1dd90593b0602321bd057d"
 };
 
@@ -26,28 +28,25 @@ const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const userText = document.getElementById("userText");
 
-// Login (MOBILE SAFE)
-loginBtn.onclick = () => {
+// 🔥 LOGIN (REDIRECT – MOBILE SAFE)
+loginBtn.addEventListener("click", () => {
   signInWithRedirect(auth, provider);
-};
+});
 
-// Handle redirect result
-getRedirectResult(auth).catch(console.error);
+// LOGOUT
+logoutBtn.addEventListener("click", async () => {
+  await signOut(auth);
+});
 
-// Auth state
+// 🔥 AUTH STATE (THIS IS THE KEY FIX)
 onAuthStateChanged(auth, (user) => {
   if (user) {
     userText.innerText = `Hi ${user.displayName}`;
     loginBtn.style.display = "none";
-    logoutBtn.style.display = "block";
+    logoutBtn.style.display = "inline-block";
   } else {
     userText.innerText = "Not logged in";
-    loginBtn.style.display = "block";
+    loginBtn.style.display = "inline-block";
     logoutBtn.style.display = "none";
   }
 });
-
-// Logout
-logoutBtn.onclick = async () => {
-  await signOut(auth);
-};
